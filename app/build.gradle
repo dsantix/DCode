@@ -1,0 +1,138 @@
+
+
+import com.dsanti.buildsrc.Libs
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.mikepenz.aboutlibraries.plugin'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.dsanti.dcode"
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName "0.10"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        compose true
+        buildConfig true
+        viewBinding true
+
+        // Disable unused AGP features
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+    }
+
+
+    packagingOptions {
+        exclude "META-INF/licenses/**"
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+    }
+}
+
+dependencies {
+
+    implementation Libs.aboutLibrariesCore
+
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
+
+
+    implementation Libs.AndroidX.Activity.activityCompose
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Lifecycle.livedata
+    implementation Libs.AndroidX.Lifecycle.viewModelCompose
+    implementation Libs.AndroidX.Navigation.fragment
+    implementation Libs.AndroidX.Navigation.uiKtx
+    implementation Libs.AndroidX.Navigation.compose
+    implementation Libs.material3
+
+    implementation Libs.AndroidX.CameraX.camera_camera2
+    implementation Libs.AndroidX.CameraX.camera_core
+    implementation Libs.AndroidX.CameraX.camera_extensions
+    implementation Libs.AndroidX.CameraX.camera_lifecycle
+    implementation Libs.AndroidX.CameraX.camera_video
+    implementation Libs.AndroidX.CameraX.camera_view
+
+
+    implementation Libs.AndroidX.Compose.layout
+    // TODO (M3): Remove this dependency when all components are available
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.Material3.material3
+    implementation Libs.AndroidX.Compose.materialIconsExtended
+    implementation Libs.AndroidX.Compose.toolingPreview
+    implementation Libs.AndroidX.Compose.uiUtil
+    implementation Libs.AndroidX.Compose.uiText
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.runtimeLivedata
+    implementation Libs.AndroidX.Compose.viewBinding
+    implementation Libs.AndroidX.Compose.accompanistUiController
+    implementation Libs.AndroidX.Compose.accompanistPager
+    implementation Libs.AndroidX.Compose.accompanistPermissions
+    implementation Libs.AndroidX.Compose.accompanistNavigationAnimation
+    implementation Libs.AndroidX.Compose.accompanistFlowLayout
+    debugImplementation Libs.AndroidX.Compose.tooling
+
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
+
+
+    implementation Libs.QRCode.zxingAndroid
+    implementation Libs.QRCode.zxingCore
+
+    implementation Libs.UI.coil_kt
+    implementation Libs.UI.fontAwesome
+    implementation Libs.UI.about_libraries_ui
+
+
+    
+
+    androidTestImplementation Libs.junit
+    androidTestImplementation Libs.AndroidX.Test.core
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.Ext.junit
+    androidTestImplementation Libs.AndroidX.Compose.uiTest
+
+    // androidx.test is forcing JUnit, 4.12. This forces it to use 4.13
+    configurations.configureEach {
+        resolutionStrategy {
+            force Libs.junit
+        }
+    }
+}

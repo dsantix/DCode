@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1115" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_discord_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_dsanti_icon_nonstop.xml" value="0.1" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_facebook_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_instagram_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_ko_fi_logo_rgb_dark.xml" value="0.1565" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1115" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1115" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_pinterest_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_spotify_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/drawable/ic_tiktok_color.xml" value="0.1685" />
+        <entry key="..\:/Users/finha/AndroidStudioProjects/QRCodeGeneratorScanner/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1115" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

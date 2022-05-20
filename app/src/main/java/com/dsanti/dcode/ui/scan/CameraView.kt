@@ -1,6 +1,7 @@
 package com.dsanti.dcode.ui.scan
 
 import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
+import com.dsanti.dcode.data.AppDatabase
+import com.dsanti.dcode.data.QRCode
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
@@ -32,17 +37,21 @@ import kotlinx.coroutines.launch
 
 
 
+
+
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalPagerApi::class,
     ExperimentalMaterialApi::class
 )
 @Composable
-fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel()) {
+fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel(), context: Context) {
 
     val cameraPermissionState = rememberPermissionState(
         android.Manifest.permission.CAMERA
     )
 
     val result by scanViewModel.result.observeAsState()
+
+    val db = AppDatabase.getInstance(context)
 
 
     when (cameraPermissionState.status) {
@@ -58,7 +67,9 @@ fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel()) {
                         result?.let { BottomSheetResult(result = it) }
                     }
                 }) {
-                    ZxingCameraScan(pagerState.currentPage, state)
+                    if (db != null) {
+                        ZxingCameraScan(pagerState.currentPage, state, db = db)
+                    }
                     HorizontalPager(count = tabs.size, state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
                         tabs[page].screen()
                     }
@@ -172,15 +183,15 @@ fun CameraPreview(
 //FUTURE UPDATE: REMOVE JOURNEYAPPS LIBRARY AND REPLACE WITH CAMERAX
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, scanViewModel: ScanViewModel = viewModel()) {
+fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, scanViewModel: ScanViewModel = viewModel(), db: AppDatabase) {
     var scanFlag by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
 
     AndroidView(
-        factory = { context ->
-            DecoratedBarcodeView(context).apply {
+        factory = { context1 ->
+            DecoratedBarcodeView(context1).apply {
                 this.setStatusText("")
                 this.viewFinder.setLaserVisibility(false)
             }
@@ -204,6 +215,7 @@ fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, sc
                     decoratedBarcodeView.barcodeView.stopDecoding()
                     scanFlag = false
                     scope.launch {
+                        addQRToDatabase(result = it, db)
                         bottomSheetState.show()
                     }
                 }
@@ -215,4 +227,8 @@ fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, sc
 
 }
 
+private fun addQRToDatabase(result: BarcodeResult, db: AppDatabase){
+    val qrDao = db.qrCodeDao()
 
+    qrDao.insertAll(QRCode(qrCodeDate = result.timestamp, qrCodeText = result.text))
+}

@@ -82,6 +82,8 @@ dependencies {
     implementation Libs.AndroidX.Navigation.uiKtx
     implementation Libs.AndroidX.Navigation.compose
     implementation Libs.material3
+    implementation Libs.AndroidX.Room.room
+    implementation Libs.AndroidX.Room.room_annotation
 
     implementation Libs.AndroidX.CameraX.camera_camera2
     implementation Libs.AndroidX.CameraX.camera_core

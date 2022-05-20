@@ -69,6 +69,15 @@ object Libs {
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
+
+
+        }
+
+        object Room {
+            const val version = "2.4.1"
+
+            const val room = "androidx.room:room-runtime:$version"
+            const val room_annotation = "androidx.room:room-compiler:$version"
         }
 
         object Navigation {

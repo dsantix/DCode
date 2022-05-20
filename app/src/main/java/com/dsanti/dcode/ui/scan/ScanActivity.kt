@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.dsanti.dcode.R
@@ -32,9 +33,10 @@ class ScanActivity : ComponentActivity() {
         
         setContent { 
             DCodeTheme {
+                val context = LocalContext.current
                 SystemBarTransparent()
                 Box(modifier = Modifier.fillMaxSize()){
-                    ScanCameraWithPermissions()
+                    ScanCameraWithPermissions(context = context)
                     IconButton(onClick = {
                         finish()
                     }, modifier = Modifier

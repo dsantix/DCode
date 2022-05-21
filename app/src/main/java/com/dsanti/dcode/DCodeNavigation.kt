@@ -5,18 +5,18 @@ import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,6 +28,10 @@ import com.dsanti.dcode.ui.scan.ScanActivity
 import com.dsanti.dcode.ui.settings.*
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+
+val settingsItemList = listOf(SettingsItem(Icons.Rounded.History, R.string.settings_history, Screen.History),
+    SettingsItem(Icons.Rounded.LocalPolice, R.string.privacy_policy, Screen.PrivacyPolicy), SettingsItem(Icons.Rounded.Info, R.string.settings_about, Screen.About)
+)
 
 @Composable
 fun BottomAppBar(context: Context, navController: NavHostController, bottomBarState: MutableState<Boolean>) {
@@ -71,7 +75,6 @@ fun BottomAppBar(context: Context, navController: NavHostController, bottomBarSt
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(navController: NavHostController, topBarState: MutableState<Boolean>, scrollBehavior : TopAppBarScrollBehavior) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -83,6 +86,8 @@ fun TopAppBar(navController: NavHostController, topBarState: MutableState<Boolea
         "history" -> Screen.History.title
         "about" -> Screen.About.title
         "privacyPolicy" -> Screen.PrivacyPolicy.title
+        "licenses" -> Screen.Licenses.title
+        "changelog" -> Screen.Changelog.title
         else -> {Screen.Home.title}
     }
 
@@ -119,16 +124,12 @@ fun DCodeAppNavigation(bottomBarState: MutableState<Boolean>, topBarState: Mutab
             bottomBarState.value = true
             topBarState.value = false
         }
-        "privacyPolicy" -> {
-            bottomBarState.value = true
-            topBarState.value = false
-        }
     }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableState<Boolean>, topBarState: MutableState<Boolean>, paddingValues: PaddingValues) {
+fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableState<Boolean>, topBarState: MutableState<Boolean>, paddingValues: PaddingValues, isAppUpdated:MutableState<Boolean>) {
 
     AnimatedNavHost(navController = navController, startDestination = Screen.Home.route){
         composable(Screen.Home.route, enterTransition = {
@@ -146,7 +147,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
                 bottomBarState.value = true
                 topBarState.value = false
             }
-            Home()
+            Home(isAppUpdated)
         }
 
         composable(Screen.Settings.route, enterTransition = {
@@ -159,7 +160,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
                 bottomBarState.value = true
                 topBarState.value = false
             }
-            Settings(listSettings = SettingsViewModel().settingsItemList, navController = navController)
+            Settings(listSettings = settingsItemList, navController = navController)
         }
 
         composable(Screen.About.route, exitTransition = {
@@ -185,7 +186,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
                 bottomBarState.value = false
                 topBarState.value = true
             }
-            PrivacyPolicy(Modifier.padding(paddingValues))
+            PrivacyPolicy()
         }
 
         composable(Screen.History.route, exitTransition = {
@@ -213,8 +214,22 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
             }
             Licenses(Modifier.padding(paddingValues))
         }
+
+        composable(Screen.Changelog.route, exitTransition = {
+            when(targetState.destination.route){
+                Screen.About.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                else -> null
+            }
+        }){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            Changelog(Modifier.padding(paddingValues))
+        }
     }
 }
+
 
 
 sealed class Screen(val route: String, @StringRes val title: Int, val icon: ImageVector){
@@ -224,4 +239,5 @@ sealed class Screen(val route: String, @StringRes val title: Int, val icon: Imag
     object History : Screen("history", R.string.settings_history, Icons.Rounded.History)
     object PrivacyPolicy : Screen("privacyPolicy", R.string.privacy_policy, Icons.Rounded.Policy)
     object Licenses : Screen("licenses", R.string.about_licenses, Icons.Rounded.VpnKey)
+    object Changelog : Screen("changelog", R.string.changelog, Icons.Rounded.ChangeHistory)
 }

@@ -6,6 +6,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'com.mikepenz.aboutlibraries.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -72,6 +73,8 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.android
 
+    implementation Libs.AndroidX.dataStore
+
 
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.coreKtx
@@ -83,7 +86,7 @@ dependencies {
     implementation Libs.AndroidX.Navigation.compose
     implementation Libs.material3
     implementation Libs.AndroidX.Room.room
-    implementation Libs.AndroidX.Room.room_annotation
+    kapt Libs.AndroidX.Room.room_annotation
 
     implementation Libs.AndroidX.CameraX.camera_camera2
     implementation Libs.AndroidX.CameraX.camera_core

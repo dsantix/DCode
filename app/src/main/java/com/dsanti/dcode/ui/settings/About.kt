@@ -58,7 +58,20 @@ fun About(modifier: Modifier, navController: NavController) {
                     .padding(horizontal = 8.dp, vertical = 8.dp))
             }
 
-            Row(Modifier.align(Alignment.CenterHorizontally).padding(vertical = 16.dp)) {
+            Row(Modifier.clickable { navController.navigate(Screen.Changelog.route) }) {
+                Icon(imageVector = Icons.Rounded.Update, contentDescription = null, modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(horizontal = 8.dp))
+
+                Text(text = stringResource(id = R.string.changelog), modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp))
+            }
+
+            Row(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 16.dp)) {
                 FaIcon(faIcon = FaIcons.Github, modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(horizontal = 8.dp)

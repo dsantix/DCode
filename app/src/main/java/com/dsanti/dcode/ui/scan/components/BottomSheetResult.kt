@@ -242,14 +242,18 @@ fun BottomSheetResult(result: BarcodeResult) {
                 }
 
                 this?.startsWith("BEGIN:VCARD") == true -> {
-                    val name = Regex("(N:.*)").find(result.text)?.groups?.first()?.value
-                    val company = Regex("(ORG:.*)").find(result.text)?.groups?.first()?.value
-                    val title = Regex("(TITLE:.*)").find(result.text)?.groups?.first()?.value
-                    val phoneNumber = Regex("(TEL:.*)").find(result.text)?.groups?.first()?.value
-                    val email = Regex("(EMAIL:.*)").find(result.text)?.groups?.first()?.value
-                    val address = Regex("(ADR:.*)").find(result.text)?.groups?.first()?.value
-                    val website = Regex("(URL:.*)").find(result.text)?.groups?.first()?.value
-                    val note = Regex("(NOTE:.*)").find(result.text)?.groups?.first()?.value
+
+                    val text = result.text.removePrefix("BEGIN:VCARD VERSION:3.0").removeSuffix("END:VCARD")
+
+
+                    val name = Regex("(N:.*)").find(text)?.groups?.first()?.value
+                    val company = Regex("(ORG:.*)").find(text)?.groups?.first()?.value
+                    val title = Regex("(TITLE:.*)").find(text)?.groups?.first()?.value
+                    val phoneNumber = Regex("(TEL:.*)").find(text)?.groups?.first()?.value
+                    val email = Regex("(EMAIL:.*)").find(text)?.groups?.first()?.value
+                    val address = Regex("(ADR:.*)").find(text)?.groups?.first()?.value
+                    val website = Regex("(URL:.*)").find(text)?.groups?.first()?.value
+                    val note = Regex("(NOTE:.*)").find(text)?.groups?.first()?.value
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
@@ -357,8 +361,7 @@ fun BottomSheetResult(result: BarcodeResult) {
                             .clickable {
                                 TODO()
                             }) {
-                            FaIcon(faIcon = FaIcons.AlignCenter, modifier = Modifier
-                                .rotate(90f)
+                            Icon(imageVector = Icons.Rounded.GraphicEq, contentDescription = null, modifier = Modifier
                                 .align(Alignment.CenterHorizontally))
                             Text(text = stringResource(id = R.string.action_readtext), modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
@@ -388,7 +391,7 @@ fun BottomSheetResult(result: BarcodeResult) {
 
 @Stable
 @Composable
-private fun textContent(text: String) : String {
+fun textContent(text: String) : String {
 
     return with(text){
         when{
@@ -601,7 +604,7 @@ private fun convertDateToMillis(text: String?, isAllDayEvent: Boolean) : Long{
 
         val dateFormart = if (isAllDayEvent) SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) else SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
 
-        val date = dateFormart.parse(text)
+        val date = text?.let { dateFormart.parse(it) }
 
 
         if (date != null) {

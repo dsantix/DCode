@@ -55,5 +55,10 @@
     <string name="vevent_endDate">End date</string>
     <string name="vevent_location">Location</string>
     <string name="vevent_description">Description</string>
+    <string name="scrollToTop">Scroll to top</string>
+    <string name="changelog">Changelog</string>
+    <string name="ok">Ok</string>
+    <string name="app_updated">App updated</string>
+    <string name="about_version">About this version</string>
 
 </resources>

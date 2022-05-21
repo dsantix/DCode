@@ -32,6 +32,7 @@ object Libs {
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.4.1"
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
+        const val dataStore = "androidx.datastore:datastore-preferences:1.0.0"
 
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.4.0"
@@ -74,7 +75,7 @@ object Libs {
         }
 
         object Room {
-            const val version = "2.4.1"
+            const val version = "2.4.2"
 
             const val room = "androidx.room:room-runtime:$version"
             const val room_annotation = "androidx.room:room-compiler:$version"

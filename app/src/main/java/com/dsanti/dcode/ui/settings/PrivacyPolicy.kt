@@ -5,6 +5,6 @@ import androidx.compose.ui.Modifier
 
 
 @Composable
-fun PrivacyPolicy(modifier: Modifier) {
+fun PrivacyPolicy() {
 
 }

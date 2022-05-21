@@ -2,6 +2,7 @@ package com.dsanti.dcode.ui.scan
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.dsanti.dcode.ui.components.TabRounded
 import com.dsanti.dcode.ui.scan.components.BottomSheetResult
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.dsanti.dcode.data.AppDatabase
 import com.dsanti.dcode.data.QRCode
+import com.dsanti.dcode.ui.ComposableLifecycle
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
@@ -188,6 +191,7 @@ fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, sc
 
     val scope = rememberCoroutineScope()
 
+    var capture : CaptureManager? = null
 
     AndroidView(
         factory = { context1 ->
@@ -201,9 +205,9 @@ fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, sc
         if (pagerIndex == 1) {
             decoratedBarcodeView.barcodeView.stopDecoding()
         } else {
-            val capture = CaptureManager(decoratedBarcodeView.context as Activity, decoratedBarcodeView)
-            capture.initializeFromIntent((decoratedBarcodeView.context as Activity).intent, null)
-            capture.decode()
+            capture = CaptureManager(decoratedBarcodeView.context as Activity, decoratedBarcodeView)
+            capture!!.initializeFromIntent((decoratedBarcodeView.context as Activity).intent, null)
+            capture!!.decode()
             decoratedBarcodeView.decodeContinuous { decoratedResult ->
                 if (scanFlag) {
                     return@decodeContinuous
@@ -222,6 +226,16 @@ fun ZxingCameraScan(pagerIndex: Int, bottomSheetState: ModalBottomSheetState, sc
             }
 
             if (!bottomSheetState.isVisible) decoratedBarcodeView.resume() else decoratedBarcodeView.pause()
+        }
+    }
+
+    ComposableLifecycle { _, event ->
+
+        when(event){
+            Lifecycle.Event.ON_DESTROY -> capture?.onDestroy()
+            Lifecycle.Event.ON_PAUSE -> capture?.onPause()
+            Lifecycle.Event.ON_RESUME -> capture?.onResume()
+            else -> {capture?.onPause()}
         }
     }
 

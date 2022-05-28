@@ -54,6 +54,10 @@ fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel(), contex
 
     val result by scanViewModel.result.observeAsState()
 
+    val resultUpload by scanViewModel.resultUpload.observeAsState()
+
+    val scope = rememberCoroutineScope()
+
     val db = AppDatabase.getInstance(context)
 
 
@@ -62,19 +66,31 @@ fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel(), contex
         PermissionStatus.Granted -> {
             val pagerState = rememberPagerState(0)
             val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-            val scope = rememberCoroutineScope()
             val tabs = listOf(ScanItems.ReadCode, ScanItems.UploadCode)
             Box(Modifier.fillMaxSize()) {
                 ModalBottomSheetLayout(sheetState = state, sheetShape = RoundedCornerShape(12.dp),sheetContent = {
                     Box(modifier = Modifier.defaultMinSize(minHeight = 1.dp)){
-                        result?.let { BottomSheetResult(result = it) }
+                        result?.let { BottomSheetResult(result = it, uploadText = null) }
+                        //resultUpload?.let { BottomSheetResult(result = null, uploadText = resultUpload?.text) }
                     }
                 }) {
+
                     if (db != null) {
                         ZxingCameraScan(pagerState.currentPage, state, db = db)
                     }
+                    ScanOverlay()
+                    /*
                     HorizontalPager(count = tabs.size, state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-                        tabs[page].screen()
+                        when(page){
+                            0 -> {
+
+                            }
+                            1 -> {
+                                if (db != null) {
+                                    UploadOverlay(state, db = db)
+                                }
+                            }
+                        }
                     }
                     Box(
                         Modifier
@@ -82,7 +98,7 @@ fun ScanCameraWithPermissions(scanViewModel: ScanViewModel = viewModel(), contex
                             .align(Alignment.BottomCenter)
                             .padding(bottom = 32.dp)) {
                         TabRounded(tabs = tabs, pagerState = pagerState, scope = scope)
-                    }
+                    }*/
                 }
             }
         }

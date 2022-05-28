@@ -1,10 +1,9 @@
 package com.dsanti.dcode.ui.home
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,38 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.navigation.NavController
 import com.dsanti.dcode.R
 import com.dsanti.dcode.data.Update
-import com.dsanti.dcode.dataStore
-import com.dsanti.dcode.ui.ComposableFun
-import com.dsanti.dcode.ui.pagerTabIndicatorOffset
-import com.dsanti.dcode.ui.settings.ChangelogItem
 import com.dsanti.dcode.ui.settings.updates
-import com.dsanti.dcode.ui.theme.*
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import com.dsanti.dcode.ui.theme.AppTypography
+import com.dsanti.dcode.ui.theme.DCodeTheme
 
 
 @Composable
-fun Home(isUpdated:MutableState<Boolean>){
+fun Home(isUpdated:MutableState<Boolean>, navController: NavController){
     val shapeColor = MaterialTheme.colorScheme.primary
 
     if (isUpdated.value) ChangelogDialog(openDialog = isUpdated)
@@ -62,7 +49,7 @@ fun Home(isUpdated:MutableState<Boolean>){
             Text(text = stringResource(id = R.string.app_name), modifier = Modifier
                 .padding(top = 1.dp)
                 .align(Alignment.CenterHorizontally))
-            Content()
+            Content(navController)
         }
 
         Row(modifier = Modifier
@@ -97,11 +84,14 @@ fun Home(isUpdated:MutableState<Boolean>){
 }
 
 @Composable
-fun Content() {
+fun Content(navController: NavController) {
     Spacer(modifier = Modifier.height(50.dp))
-    SearchTextField()
+    //SearchTextField()
+    Text(text = stringResource(id = R.string.home_create),
+        style = AppTypography.displaySmall
+    )
     Spacer(modifier = Modifier.height(8.dp))
-    GridListContentScrolling()
+    GridListContentScrolling(navController)
 }
 
 
@@ -111,7 +101,7 @@ fun SearchTextField() {
         .fillMaxWidth()
         .padding(start = 8.dp, end = 8.dp)) {
         Text(text = stringResource(id = R.string.home_create),
-            style = AppTypography.displaySmall
+            style = AppTypography.displaySmall, modifier = Modifier.padding(horizontal = 8.dp)
         )
 
         var text by remember { mutableStateOf("") }

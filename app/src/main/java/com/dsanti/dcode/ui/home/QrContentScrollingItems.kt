@@ -20,7 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.dsanti.dcode.R
 import com.dsanti.dcode.Screen
 import com.dsanti.dcode.ui.header
@@ -35,7 +37,7 @@ import kotlinx.coroutines.flow.map
 
 
 @Composable
-fun GridListContentScrolling() {
+fun GridListContentScrolling(navController: NavController) {
 
     val tint = MaterialTheme.colorScheme.onSurface
 
@@ -56,7 +58,7 @@ fun GridListContentScrolling() {
                     .fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
-
+                        listItems[index].screen?.route?.let { navController.navigate(it) }
                     }
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(8.dp)) {
@@ -73,8 +75,9 @@ fun GridListContentScrolling() {
 
         items(socialItems.size){ index ->
             Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant , elevation = 4.dp,modifier = Modifier
+                .padding(horizontal = 8.dp)
                 .clickable {
-
+                    socialItems[index].screen?.route?.let { navController.navigate(it) }
                 }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(8.dp)) {
                     FaIcon(faIcon = socialItems[index].faIcon!!, modifier = Modifier
@@ -97,9 +100,9 @@ fun GridListContentScrolling() {
                                 Image(painter = painterResource(id = socialItems[index].iconBrandColor!!), contentDescription = null, modifier = Modifier.align(Alignment.Center))
                             }
 
-                            Text(text = "Follow us", modifier = Modifier
+                            Text(text = stringResource(id = socialItems[index].bottomText!!), modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 8.dp), color = Color.White)
+                                .padding(bottom = 8.dp), color = Color.White, textAlign = TextAlign.Center)
                         }
                     }
                 }
@@ -109,29 +112,22 @@ fun GridListContentScrolling() {
     })
 }
 
-
-@Composable
-fun SocialItems() {
-
-
-}
-
-sealed class QrGeneralItems(val icon: ImageVector?, val faIcon: FaIconType?, @StringRes val title:Int, val screen: Screen?, val colorCard: Color?, val iconBrandColor: Int?){
-    object Url : QrGeneralItems(Icons.Rounded.Link, null,R.string.qr_url, null, colorCard = null , null)
-    object Email : QrGeneralItems(Icons.Rounded.Email, null,R.string.qr_email, null, colorCard = null, null)
-    object Vcard : QrGeneralItems(Icons.Rounded.CardMembership, null,R.string.qr_vcard, null, colorCard = null, null)
-    object Number : QrGeneralItems(Icons.Rounded.CellTower, null,R.string.qr_number, null, colorCard = null, null)
-    object SmsFacetime : QrGeneralItems(Icons.Rounded.Sms, null,R.string.qr_sms_facetime, null, colorCard = null, null)
-    object CalendarEvent : QrGeneralItems(Icons.Rounded.Event, null,R.string.qr_calendar_event, null, colorCard =  null, null)
-    object Wifi : QrGeneralItems(Icons.Rounded.Wifi, null,R.string.qr_wifi, null, colorCard = null, null)
-    object AppStore : QrGeneralItems(Icons.Rounded.Store, null,R.string.qr_app_store, null, colorCard = null, null)
-    object Instagram : QrGeneralItems(null, FaIcons.Instagram, R.string.qr_instagram, null, colorCard = Color(0xFF515BD4), R.drawable.ic_instagram_color)
-    object Spotify : QrGeneralItems(null, FaIcons.Spotify, R.string.qr_spotify, null, colorCard = Color(0xFF1DB954), R.drawable.ic_spotify_color)
-    object TikTok : QrGeneralItems(null, FaIcons.Tiktok, R.string.qr_tiktok, null, colorCard = Color(0xFF000000), R.drawable.ic_tiktok_color)
-    object Facebook : QrGeneralItems(null, FaIcons.Facebook, R.string.qr_facebook, null, colorCard = Color(0xFF4267B2), R.drawable.ic_facebook_color)
-    object Pinterest : QrGeneralItems(null, FaIcons.Pinterest, R.string.qr_pinterest, null, colorCard = Color(0xFFE60023), R.drawable.ic_pinterest_color)
-    object Whatsapp : QrGeneralItems(null, FaIcons.Whatsapp, R.string.qr_whatsapp, null, colorCard = Color(0xFF25D366), R.drawable.ic__whatsapp_color)
-    object Discord : QrGeneralItems(null, FaIcons.Discord, R.string.qr_discord, null, colorCard = Color(0xFF5865F2), R.drawable.ic_discord_color)
+sealed class QrGeneralItems(val icon: ImageVector?, val faIcon: FaIconType?, @StringRes val title:Int, val screen: Screen?, val colorCard: Color?, val iconBrandColor: Int?, @StringRes val bottomText : Int?){
+    object Url : QrGeneralItems(Icons.Rounded.Link, null,R.string.qr_url, Screen.CreateUrl, colorCard = null , null, null)
+    object Email : QrGeneralItems(Icons.Rounded.Email, null,R.string.qr_email, Screen.CreateEmail, colorCard = null, null, null)
+    object Vcard : QrGeneralItems(Icons.Rounded.CardMembership, null,R.string.qr_vcard, Screen.CreateVCard, colorCard = null, null, null)
+    object Number : QrGeneralItems(Icons.Rounded.CellTower, null,R.string.qr_number, Screen.CreatePhoneNumber, colorCard = null, null, null)
+    object SmsFacetime : QrGeneralItems(Icons.Rounded.Sms, null,R.string.qr_sms_facetime, Screen.CreateSMS, colorCard = null, null, null)
+    object CalendarEvent : QrGeneralItems(Icons.Rounded.Event, null,R.string.qr_calendar_event, Screen.CreateCalendarEvent, colorCard =  null, null, null)
+    object Wifi : QrGeneralItems(Icons.Rounded.Wifi, null,R.string.qr_wifi, Screen.CreateWIFI, colorCard = null, null, null)
+    object AppStore : QrGeneralItems(Icons.Rounded.Store, null,R.string.qr_app_store, Screen.CreateAppStore, colorCard = null, null, null)
+    object Instagram : QrGeneralItems(null, FaIcons.Instagram, R.string.qr_instagram, null, colorCard = Color(0xFF515BD4), R.drawable.ic_instagram_color, R.string.followUs)
+    object Spotify : QrGeneralItems(null, FaIcons.Spotify, R.string.qr_spotify, null, colorCard = Color(0xFF1DB954), R.drawable.ic_spotify_color, R.string.playlist)
+    object TikTok : QrGeneralItems(null, FaIcons.Tiktok, R.string.qr_tiktok, null, colorCard = Color(0xFF000000), R.drawable.ic_tiktok_color, R.string.followUs)
+    object Facebook : QrGeneralItems(null, FaIcons.Facebook, R.string.qr_facebook, null, colorCard = Color(0xFF4267B2), R.drawable.ic_facebook_color, R.string.followUs)
+    object Pinterest : QrGeneralItems(null, FaIcons.Pinterest, R.string.qr_pinterest, null, colorCard = Color(0xFFE60023), R.drawable.ic_pinterest_color, R.string.followUs)
+    object Whatsapp : QrGeneralItems(null, FaIcons.Whatsapp, R.string.qr_whatsapp, null, colorCard = Color(0xFF25D366), R.drawable.ic__whatsapp_color, R.string.sendMessage)
+    object Discord : QrGeneralItems(null, FaIcons.Discord, R.string.qr_discord, null, colorCard = Color(0xFF5865F2), R.drawable.ic_discord_color, R.string.discordServer)
 }
 
 

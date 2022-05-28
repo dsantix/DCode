@@ -6,10 +6,13 @@ object Versions {
 
 object Libs {
     const val latestAboutLibsRelease = "10.1.0"
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.0"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
     const val aboutLibraries = "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$latestAboutLibsRelease"
     const val aboutLibrariesCore = "com.mikepenz:aboutlibraries-core:$latestAboutLibsRelease"
+    const val googleServices = "com.google.gms:google-services:4.3.10"
+    const val crashlytics_firebase = "com.google.firebase:firebase-crashlytics-gradle:2.8.1"
+    const val firebase_pref = "com.google.firebase:perf-plugin:1.4.1"
 
     const val junit = "junit:junit:4.13"
 
@@ -27,6 +30,13 @@ object Libs {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+    }
+
+    object Firebase {
+        const val bom = "com.google.firebase:firebase-bom:30.0.2"
+        const val firebase_analytics_ktx = "com.google.firebase:firebase-analytics-ktx"
+        const val fibase_crashlytics = "com.google.firebase:firebase-crashlytics"
+        const val firebase_pref = "com.google.firebase:firebase-perf"
     }
 
     object AndroidX {
@@ -62,11 +72,12 @@ object Libs {
             const val accompanistPager = "com.google.accompanist:accompanist-pager:$accompanist_version"
             const val accompanistPermissions = "com.google.accompanist:accompanist-permissions:$accompanist_version"
             const val accompanistNavigationAnimation = "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+            const val accompanistWebView = "com.google.accompanist:accompanist-webview:$accompanist_version"
 
 
             object Material3 {
                 const val snapshot = ""
-                const val version = "1.0.0-alpha10"
+                const val version = "1.0.0-alpha12"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
@@ -134,6 +145,8 @@ object Libs {
         const val fontAwesome = "com.github.Gurupreet:FontAwesomeCompose:$font_version"
         const val coil_kt = "io.coil-kt:coil-compose:$coil_version"
         const val about_libraries_ui = "com.mikepenz:aboutlibraries-compose:$latestAboutLibsRelease"
+        const val crop_imager = "com.github.CanHub:Android-Image-Cropper:4.2.1"
+        const val capturable = "dev.shreyaspatil:capturable:1.0.3"
     }
 
 

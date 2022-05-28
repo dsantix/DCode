@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.PatternMatcher
 import android.provider.CalendarContract
 import android.provider.ContactsContract
+import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +39,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.dsanti.dcode.MainActivity
 import com.dsanti.dcode.R
+import com.dsanti.dcode.ui.scan.ScanViewModel
 import com.guru.fontawesomecomposelib.FaIcon
 import com.guru.fontawesomecomposelib.FaIcons
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -46,10 +50,15 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 
+private val textToSpeechEngine: TextToSpeech by lazy {
+    TextToSpeech(MainActivity().applicationContext) {
+        if (it == TextToSpeech.SUCCESS) textToSpeechEngine.language = Locale.getDefault()
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheetResult(result: BarcodeResult) {
+fun BottomSheetResult(result: BarcodeResult?, scanViewModel: ScanViewModel = viewModel(), uploadText: String?) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
@@ -57,15 +66,20 @@ fun BottomSheetResult(result: BarcodeResult) {
         mutableStateOf("")
     }
 
-    text = result.text!!
+    text = if (result != null) {
+        textContent(text = result.text)
+    }else {
+        textContent(text = uploadText!!)
+    }
 
+    val textWithoutChange = uploadText ?: result?.text
 
     Column(
         Modifier
             .background(Color.White)
             .fillMaxWidth()) {
 
-        with(result.text){
+        with(textWithoutChange){
             when {
                 this?.startsWith("tel:") == true -> {
                     Card(
@@ -139,18 +153,18 @@ fun BottomSheetResult(result: BarcodeResult) {
             }
         }
 
-        Text(text = textContent(text), modifier = Modifier
+        Text(text = text, modifier = Modifier
             .padding(vertical = 26.dp, horizontal = 8.dp)
             .fillMaxWidth())
 
 
-        with(result.text){
+        with(textWithoutChange){
             when {
                 this?.startsWith("tel:") == true -> {
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
-                            val intent = Intent(Intent.ACTION_DIAL, result.text.toUri())
+                            val intent = Intent(Intent.ACTION_DIAL, text.toUri())
                             context.startActivity(intent)
                         }) {
                         Icon(imageVector = Icons.Rounded.Call, contentDescription = null, modifier = Modifier
@@ -159,16 +173,15 @@ fun BottomSheetResult(result: BarcodeResult) {
                             )
                         
                         Text(text = stringResource(id = R.string.action_makecall), modifier = Modifier.padding(bottom = 8.dp))
-                        
                     }
                     
                 }
 
                 this?.startsWith("smsto:") == true -> {
 
-                    val smsto = Regex("^([^:]*:[^:]*)").find(result.text)
+                    val smsto = Regex("^([^:]*:[^:]*)").find(textWithoutChange!!)
 
-                    val smsbody = Regex("(?<=smsto:).*").find(result.text)?.groups?.first()?.value?.substringAfter(":")
+                    val smsbody = Regex("(?<=smsto:).*").find(textWithoutChange!!)?.groups?.first()?.value?.substringAfter(":")
 
 
                     
@@ -199,7 +212,7 @@ fun BottomSheetResult(result: BarcodeResult) {
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
-                            val mail = result.text.substringAfter("mailto:")
+                            val mail = textWithoutChange!!.substringAfter("mailto:")
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
                                 putExtra(Intent.EXTRA_EMAIL, mail)
@@ -221,9 +234,9 @@ fun BottomSheetResult(result: BarcodeResult) {
                 }
 
                 this?.startsWith("WIFI:") == true -> {
-                    val ssid = Regex("(S:.*?;)").find(result.text)?.groups?.first()?.value?.removePrefix("S:")?.removeSuffix(";")
-                    val password = Regex("(P:.*?;)").find(result.text)?.groups?.first()?.value?.removePrefix("P:")?.removeSuffix(";")
-                    val isHidden = Regex("(H:.*?;)").find(result.text)?.groups?.first()?.value?.removePrefix("H:")?.removeSuffix(";").toBoolean()
+                    val ssid = Regex("(S:.*?;)").find(textWithoutChange!!)?.groups?.first()?.value?.removePrefix("S:")?.removeSuffix(";")
+                    val password = Regex("(P:.*?;)").find(textWithoutChange)?.groups?.first()?.value?.removePrefix("P:")?.removeSuffix(";")
+                    val isHidden = Regex("(H:.*?;)").find(textWithoutChange)?.groups?.first()?.value?.removePrefix("H:")?.removeSuffix(";").toBoolean()
                     Column(
                         Modifier
                             .align(Alignment.CenterHorizontally)
@@ -243,17 +256,17 @@ fun BottomSheetResult(result: BarcodeResult) {
 
                 this?.startsWith("BEGIN:VCARD") == true -> {
 
-                    val text = result.text.removePrefix("BEGIN:VCARD VERSION:3.0").removeSuffix("END:VCARD")
+                    val textVCard = textWithoutChange!!.removePrefix("BEGIN:VCARD VERSION:3.0").removeSuffix("END:VCARD")
 
 
-                    val name = Regex("(N:.*)").find(text)?.groups?.first()?.value
-                    val company = Regex("(ORG:.*)").find(text)?.groups?.first()?.value
-                    val title = Regex("(TITLE:.*)").find(text)?.groups?.first()?.value
-                    val phoneNumber = Regex("(TEL:.*)").find(text)?.groups?.first()?.value
-                    val email = Regex("(EMAIL:.*)").find(text)?.groups?.first()?.value
-                    val address = Regex("(ADR:.*)").find(text)?.groups?.first()?.value
-                    val website = Regex("(URL:.*)").find(text)?.groups?.first()?.value
-                    val note = Regex("(NOTE:.*)").find(text)?.groups?.first()?.value
+                    val name = Regex("(N:.*)").find(textVCard)?.groups?.first()?.value
+                    val company = Regex("(ORG:.*)").find(textVCard)?.groups?.first()?.value
+                    val title = Regex("(TITLE:.*)").find(textVCard)?.groups?.first()?.value
+                    val phoneNumber = Regex("(TEL:.*)").find(textVCard)?.groups?.first()?.value
+                    val email = Regex("(EMAIL:.*)").find(textVCard)?.groups?.first()?.value
+                    val address = Regex("(ADR:.*)").find(textVCard)?.groups?.first()?.value
+                    val website = Regex("(URL:.*)").find(textVCard)?.groups?.first()?.value
+                    val note = Regex("(NOTE:.*)").find(textVCard)?.groups?.first()?.value
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
@@ -279,14 +292,14 @@ fun BottomSheetResult(result: BarcodeResult) {
                 }
 
                 this?.startsWith("MECARD:") == true -> {
-                    val name = Regex("(N:.*?;)").find(result.text)?.groups?.first()?.value
-                    val company = Regex("(ORG:.*?;)").find(result.text)?.groups?.first()?.value
-                    val title = Regex("(TITLE:.*?;)").find(result.text)?.groups?.first()?.value
-                    val phoneNumber = Regex("(TEL:.*?;)").find(result.text)?.groups?.first()?.value
-                    val email = Regex("(EMAIL:.*?;)").find(result.text)?.groups?.first()?.value
-                    val address = Regex("(ADR:.*?;)").find(result.text)?.groups?.first()?.value
-                    val website = Regex("(URL:.*?;)").find(result.text)?.groups?.first()?.value
-                    val note = Regex("(NOTE:.*?;)").find(result.text)?.groups?.first()?.value
+                    val name = Regex("(N:.*?;)").find(textWithoutChange!!)?.groups?.first()?.value
+                    val company = Regex("(ORG:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val title = Regex("(TITLE:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val phoneNumber = Regex("(TEL:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val email = Regex("(EMAIL:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val address = Regex("(ADR:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val website = Regex("(URL:.*?;)").find(textWithoutChange)?.groups?.first()?.value
+                    val note = Regex("(NOTE:.*?;)").find(textWithoutChange)?.groups?.first()?.value
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
@@ -313,27 +326,35 @@ fun BottomSheetResult(result: BarcodeResult) {
 
                 this?.startsWith("BEGIN:VEVENT") == true -> {
 
-                    val eventTitle = Regex("(SUMMARY:.*)").find(result.text)?.groups?.first()?.value
-                    val eventLocation = Regex("(LOCATION:.*)").find(result.text)?.groups?.first()?.value
-                    val eventDescription = Regex("(DESCRIPTION:.*)").find(result.text)?.groups?.first()?.value
+                    val eventTitle = Regex("(SUMMARY:.*)").find(textWithoutChange!!)?.groups?.first()?.value
+                    val eventLocation = Regex("(LOCATION:.*)").find(textWithoutChange)?.groups?.first()?.value
+                    val eventDescription = Regex("(DESCRIPTION:.*)").find(textWithoutChange)?.groups?.first()?.value
 
-                    val isEventAllDay = result.text.contains("DTSTART;VALUE=DATE")
+                    val isEventAllDay = textWithoutChange.contains("DTSTART;VALUE=DATE")
 
                     val eventStartDate : Long
                     val eventEndDate : Long
 
-                    if (result.text.contains("DTSTART;VALUE=DATE")){
-                        eventStartDate = convertDateToMillis(Regex("(DTSTART;VALUE=DATE:.*)").find(result.text)?.groups?.first()?.value, isEventAllDay)
-                        eventEndDate = convertDateToMillis(Regex("(DTEND;VALUE=DATE:.*)").find(result.text)?.groups?.first()?.value, isEventAllDay)
+                    if (textWithoutChange.contains("DTSTART;VALUE=DATE")){
+                        eventStartDate = convertDateToMillis(Regex("(DTSTART;VALUE=DATE:.*)").find(textWithoutChange)?.groups?.first()?.value, isEventAllDay)
+                        eventEndDate = convertDateToMillis(Regex("(DTEND;VALUE=DATE:.*)").find(textWithoutChange)?.groups?.first()?.value, isEventAllDay)
                     }else{
-                        eventStartDate = convertDateToMillis(Regex("(DTSTART:.*)").find(result.text)?.groups?.first()?.value, isEventAllDay)
-                        eventEndDate = convertDateToMillis(Regex("(DTEND:.*)").find(result.text)?.groups?.first()?.value, isEventAllDay)
+                        eventStartDate = convertDateToMillis(Regex("(DTSTART:.*)").find(textWithoutChange)?.groups?.first()?.value, isEventAllDay)
+                        eventEndDate = convertDateToMillis(Regex("(DTEND:.*)").find(textWithoutChange)?.groups?.first()?.value, isEventAllDay)
                     }
 
                     Column(modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
-                            addCalendarEvent(isEventAllDay, eventTitle, eventStartDate, eventEndDate, eventLocation, eventDescription, context)
+                            addCalendarEvent(
+                                isEventAllDay,
+                                eventTitle,
+                                eventStartDate,
+                                eventEndDate,
+                                eventLocation,
+                                eventDescription,
+                                context
+                            )
                         }) {
                         Icon(imageVector = Icons.Rounded.Event, contentDescription = null, modifier = Modifier
                             .align(Alignment.CenterHorizontally)
@@ -348,7 +369,7 @@ fun BottomSheetResult(result: BarcodeResult) {
                         Column(modifier = Modifier
                             .padding(horizontal = 8.dp, vertical = 8.dp)
                             .clickable {
-                                clipboardManager.setText(AnnotatedString(result.text))
+                                clipboardManager.setText(AnnotatedString(text))
                                 Toast
                                     .makeText(context, R.string.copied_text, Toast.LENGTH_SHORT)
                                     .show()
@@ -359,7 +380,8 @@ fun BottomSheetResult(result: BarcodeResult) {
                         Column(modifier = Modifier
                             .padding(horizontal = 8.dp, vertical = 8.dp)
                             .clickable {
-                                TODO()
+                                scanViewModel.initial(textToSpeechEngine)
+                                scanViewModel.speak(text)
                             }) {
                             Icon(imageVector = Icons.Rounded.GraphicEq, contentDescription = null, modifier = Modifier
                                 .align(Alignment.CenterHorizontally))
@@ -368,15 +390,11 @@ fun BottomSheetResult(result: BarcodeResult) {
                         Column(modifier = Modifier
                             .padding(horizontal = 8.dp, vertical = 8.dp)
                             .clickable {
-                                TODO()
-                            }) {
-                            Icon(imageVector = Icons.Rounded.Bookmark, contentDescription = null,modifier = Modifier.align(Alignment.CenterHorizontally))
-                            Text(text = stringResource(id = R.string.action_save), modifier = Modifier.align(Alignment.CenterHorizontally))
-                        }
-                        Column(modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .clickable {
-                                TODO()
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    putExtra(Intent.EXTRA_TEXT, text)
+                                    type = "text/plain"
+                                }
+                                context.startActivity(Intent.createChooser(shareIntent, null))
                             }) {
                             FaIcon(faIcon = FaIcons.ArrowAltCircleUpRegular, modifier = Modifier.align(Alignment.CenterHorizontally))
                             Text(text = stringResource(id = R.string.action_share), modifier = Modifier.align(Alignment.CenterHorizontally))

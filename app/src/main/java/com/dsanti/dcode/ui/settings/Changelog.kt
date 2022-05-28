@@ -17,8 +17,7 @@ import com.dsanti.dcode.ui.theme.AppTypography
 import com.dsanti.dcode.ui.theme.DCodeTheme
 import kotlinx.coroutines.launch
 
-val updates = listOf(Update(version = "0.10", date = "May 20, 2022", version_label = "Beta", whatsNew = listOf("Nothing"), fixed = listOf("Nothing"), improved = listOf("Nothing")),
-    Update(version = "0.20", date = "May 20, 2022", version_label = "Beta", whatsNew = listOf("Nothing"), fixed = listOf("Nothing"), improved = listOf("Nothing")))
+val updates = listOf<Update>()
 
 @Composable
 fun Changelog(modifier: Modifier) {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">dcode</string>
+    <string name="app_name" translatable="false">dcode</string>
     <string name="nav_home">Create</string>
     <string name="nav_scan">Scan</string>
     <string name="settings">Settings</string>
@@ -60,5 +60,50 @@
     <string name="ok">Ok</string>
     <string name="app_updated">App updated</string>
     <string name="about_version">About this version</string>
+    <string name="followUs">Follow Us</string>
+    <string name="playlist">Playlist</string>
+    <string name="sendMessage">Send message</string>
+    <string name="discordServer">Enter in my discord server</string>
+    <string name="enter_a_website">Enter a website</string>
+    <string name="scanMe">Scan Me</string>
+    <string name="livePreview">Live preview</string>
+    <string name="frame">Frame</string>
+    <string name="shapeAndColor">Shape and Color</string>
+    <string name="generate_qrcode">Generate QR Code</string>
+    <string name="color">Color</string>
+    <string name="cardBackground">Card background</string>
+    <string name="textColor">Text color</string>
+    <string name="qrcode_color">QR Code color</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="choose_a_color">Select color</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="result">Result</string>
+    <string name="qrbackground_color">QR Code background color</string>
+    <string name="invalid_url">Invalid url</string>
+    <string name="enter_valid_url">Enter a valid url</string>
+    <string name="qrcode_saved">QR Code saved in gallery</string>
+    <string name="enter_a_message">Message</string>
+    <string name="enter_a_validmessage">Enter a valid message or phone number</string>
+    <string name="enter_a_validnumber">Enter a valid phone number</string>
+    <string name="enter_valid_email">Enter a valid email</string>
+    <string name="password">Password</string>
+    <string name="wifi_name">Wifi SSID</string>
+    <string name="networktype">Network type</string>
+    <string name="wep">WEP</string>
+    <string name="wpa_wpa2">WPA/WPA2</string>
+    <string name="no_encryption">No encryption</string>
+    <string name="enter_validssid">Enter a SSID</string>
+    <string name="isHidden">Is hidden</string>
+    <string name="enter_validtext">Enter a valid text</string>
+    <string name="play_store">Play Store</string>
+    <string name="example_playstore">Example: com.dsanti.dcode</string>
+    <string name="example_appstore">Example: youtube/id544007664</string>
+    <string name="store">Choose store</string>
+    <string name="all_day_event">All day event</string>
+    <string name="select_date">Select date</string>
+    <string name="startTime">Start time</string>
+    <string name="endTime">End time</string>
 
 </resources>

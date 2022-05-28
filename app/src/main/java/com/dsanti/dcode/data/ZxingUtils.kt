@@ -1,14 +1,19 @@
 package com.dsanti.dcode.data
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageFormat
+import android.os.Build
+import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.zxing.BinaryBitmap
-import com.google.zxing.MultiFormatReader
-import com.google.zxing.NotFoundException
-import com.google.zxing.PlanarYUVLuminanceSource
-import com.google.zxing.Result
+import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.qrcode.QRCodeWriter
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.journeyapps.barcodescanner.BarcodeEncoder
+
 
 @androidx.camera.core.ExperimentalGetImage
 class ZxingQrCodeAnalyzer(
@@ -69,15 +74,64 @@ class ZxingQrCodeAnalyzer(
                     } catch (e: NotFoundException) {
                         println(e.message)
                     }
-                } else {
-                    // Manage other image formats
-                    // TODO - https://developer.android.com/reference/android/media/Image.html
                 }
             }
         } catch (ise: IllegalStateException) {
             println(ise.printStackTrace())
         }
+
+
     }
 }
 
-private data class RotatedImage(var byteArray: ByteArray, var width: Int, var height: Int)
+private data class RotatedImage(var byteArray: ByteArray, var width: Int, var height: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RotatedImage
+
+        if (!byteArray.contentEquals(other.byteArray)) return false
+        if (width != other.width) return false
+        if (height != other.height) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = byteArray.contentHashCode()
+        result = 31 * result + width
+        result = 31 * result + height
+        return result
+    }
+}
+
+
+
+fun qrGenerator(data:String, width: Int, height: Int, @ColorInt color: Int, @ColorInt backgroundColor : Int) : Bitmap {
+    val hints = hashMapOf<EncodeHintType, Any>().also {
+        it[EncodeHintType.CHARACTER_SET] = "utf-8"
+        it[EncodeHintType.MARGIN] = 1
+        it[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.L
+    }
+
+
+    val code = QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, width, height, hints)
+
+
+
+    val width: Int = code.width
+    val height: Int = code.height
+    val pixels = IntArray(width * height)
+    for (y in 0 until height) {
+        val offset = y * width
+        for (x in 0 until width) {
+            pixels[offset + x] = if (code.get(x, y)) color else backgroundColor
+        }
+    }
+
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+
+    return bitmap
+}

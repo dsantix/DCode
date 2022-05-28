@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             DCodeTheme {
                 SystemBarTransparent()
-                println()
                 DCodeApp()
             }
         }
@@ -111,14 +110,6 @@ class MainActivity : ComponentActivity() {
                 paddingValues = padding,
                 isAppUpdate
             )
-        }
-    }
-
-    @Preview
-    @Composable
-    fun AppPreview() {
-        DCodeTheme {
-
         }
     }
 }

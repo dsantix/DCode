@@ -17,6 +17,9 @@ buildscript {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
         classpath Libs.aboutLibraries
+        classpath Libs.googleServices
+        classpath Libs.crashlytics_firebase
+        classpath Libs.firebase_pref
     }
 }
 

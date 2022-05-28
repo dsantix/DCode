@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.dsanti.dcode.ui.create.*
 import com.dsanti.dcode.ui.home.Home
 import com.dsanti.dcode.ui.scan.ScanActivity
 import com.dsanti.dcode.ui.settings.*
@@ -88,6 +89,14 @@ fun TopAppBar(navController: NavHostController, topBarState: MutableState<Boolea
         "privacyPolicy" -> Screen.PrivacyPolicy.title
         "licenses" -> Screen.Licenses.title
         "changelog" -> Screen.Changelog.title
+        "createUrl" -> Screen.CreateUrl.title
+        "createEmail" -> Screen.CreateEmail.title
+        "createPhoneNumber" -> Screen.CreatePhoneNumber.title
+        "createSMS" -> Screen.CreateSMS.title
+        "createWifi" -> Screen.CreateWIFI.title
+        "createAppStore" -> Screen.CreateAppStore.title
+        "createVCard" -> Screen.CreateVCard.title
+        "createCalendarEvent" -> Screen.CreateCalendarEvent.title
         else -> {Screen.Home.title}
     }
 
@@ -121,8 +130,8 @@ fun DCodeAppNavigation(bottomBarState: MutableState<Boolean>, topBarState: Mutab
             topBarState.value = false
         }
         "about" -> {
-            bottomBarState.value = true
-            topBarState.value = false
+            bottomBarState.value = false
+            topBarState.value = true
         }
     }
 }
@@ -147,7 +156,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
                 bottomBarState.value = true
                 topBarState.value = false
             }
-            Home(isAppUpdated)
+            Home(isAppUpdated, navController)
         }
 
         composable(Screen.Settings.route, enterTransition = {
@@ -186,7 +195,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
                 bottomBarState.value = false
                 topBarState.value = true
             }
-            PrivacyPolicy()
+            PrivacyPolicy(Modifier.padding(paddingValues))
         }
 
         composable(Screen.History.route, exitTransition = {
@@ -227,6 +236,70 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
             }
             Changelog(Modifier.padding(paddingValues))
         }
+
+        composable(Screen.CreateUrl.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateWebsiteUrl(paddingValues)
+        }
+
+        composable(Screen.CreateEmail.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateEmail(paddingValues)
+        }
+
+        composable(Screen.CreatePhoneNumber.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateTelephoneNumber(paddingValues)
+        }
+
+        composable(Screen.CreateSMS.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateSMS(paddingValues)
+        }
+
+        composable(Screen.CreateWIFI.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateWifi(paddingValues)
+        }
+
+        composable(Screen.CreateAppStore.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateAppStore(paddingValues)
+        }
+
+        composable(Screen.CreateVCard.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateVCard(paddingValues)
+        }
+
+        composable(Screen.CreateCalendarEvent.route){
+            LaunchedEffect(Unit){
+                bottomBarState.value = false
+                topBarState.value = true
+            }
+            CreateCalendarEvent(paddingValues)
+        }
     }
 }
 
@@ -240,4 +313,12 @@ sealed class Screen(val route: String, @StringRes val title: Int, val icon: Imag
     object PrivacyPolicy : Screen("privacyPolicy", R.string.privacy_policy, Icons.Rounded.Policy)
     object Licenses : Screen("licenses", R.string.about_licenses, Icons.Rounded.VpnKey)
     object Changelog : Screen("changelog", R.string.changelog, Icons.Rounded.ChangeHistory)
+    object CreateUrl : Screen("createUrl", R.string.qr_url, Icons.Rounded.Link)
+    object CreateEmail : Screen("createEmail", R.string.qr_email, Icons.Rounded.Email)
+    object CreatePhoneNumber : Screen("createPhoneNumber", R.string.qr_number, Icons.Rounded.Phone)
+    object CreateSMS : Screen("createSMS", R.string.qr_sms_facetime, Icons.Rounded.Sms)
+    object CreateWIFI : Screen("createWifi", R.string.qr_wifi, Icons.Rounded.Wifi)
+    object CreateAppStore : Screen("createAppStore", R.string.qr_app_store, Icons.Rounded.Store)
+    object CreateVCard : Screen("createVCard", R.string.qr_vcard, Icons.Rounded.CardTravel)
+    object CreateCalendarEvent : Screen("createCalendarEvent", R.string.qr_calendar_event, Icons.Rounded.CalendarToday)
 }

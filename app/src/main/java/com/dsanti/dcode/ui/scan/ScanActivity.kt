@@ -19,10 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.dsanti.dcode.R
-import com.dsanti.dcode.ui.ComposableFun
 import com.dsanti.dcode.ui.SystemBarTransparent
 import com.dsanti.dcode.ui.theme.DCodeTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
 
 class ScanActivity : ComponentActivity() {
 
@@ -52,8 +50,8 @@ class ScanActivity : ComponentActivity() {
 }
 
 
-sealed class ScanItems(@StringRes var title : Int, var screen : ComposableFun){
-    object ReadCode : ScanItems(R.string.tab_read_code, { ScanOverlay()})
-    object UploadCode : ScanItems(R.string.tab_upload_code, { UploadOverlay()})
+sealed class ScanItems(@StringRes var title : Int){
+    object ReadCode : ScanItems(R.string.tab_read_code)
+    object UploadCode : ScanItems(R.string.tab_upload_code)
 }
 

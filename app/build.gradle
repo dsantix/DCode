@@ -7,6 +7,9 @@ plugins {
     id 'kotlin-android'
     id 'com.mikepenz.aboutlibraries.plugin'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 android {
@@ -14,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId "com.dsanti.dcode"
-        minSdk 21
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "0.10"
@@ -30,16 +33,17 @@ android {
         }
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     buildFeatures {
@@ -67,6 +71,11 @@ android {
 }
 
 dependencies {
+
+    implementation platform(Libs.Firebase.bom)
+    implementation Libs.Firebase.firebase_analytics_ktx
+    implementation Libs.Firebase.fibase_crashlytics
+    implementation Libs.Firebase.firebase_pref
 
     implementation Libs.aboutLibrariesCore
 
@@ -112,6 +121,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.accompanistPermissions
     implementation Libs.AndroidX.Compose.accompanistNavigationAnimation
     implementation Libs.AndroidX.Compose.accompanistFlowLayout
+    implementation Libs.AndroidX.Compose.accompanistWebView
     debugImplementation Libs.AndroidX.Compose.tooling
 
     debugImplementation Libs.AndroidX.Compose.uiTestManifest
@@ -123,6 +133,8 @@ dependencies {
     implementation Libs.UI.coil_kt
     implementation Libs.UI.fontAwesome
     implementation Libs.UI.about_libraries_ui
+    implementation Libs.UI.crop_imager
+    implementation Libs.UI.capturable
 
 
     

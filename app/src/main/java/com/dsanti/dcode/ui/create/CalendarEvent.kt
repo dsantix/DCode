@@ -3,7 +3,6 @@ package com.dsanti.dcode.ui.create
 import DateAndTimePicker
 import TimePicker
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -25,7 +24,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -41,15 +38,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dsanti.dcode.R
-import com.dsanti.dcode.data.qrGenerator
-import com.dsanti.dcode.ui.isValidUrl
 import com.dsanti.dcode.ui.legacySave
 import com.dsanti.dcode.ui.saveImageInQ
 import com.dsanti.dcode.ui.theme.AppTypography
 import com.guru.fontawesomecomposelib.FaIcon
 import com.guru.fontawesomecomposelib.FaIcons
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*

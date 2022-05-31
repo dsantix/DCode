@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material.icons.rounded.VpnKey
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +19,7 @@ import com.dsanti.dcode.BuildConfig
 import com.dsanti.dcode.R
 import com.dsanti.dcode.Screen
 import com.guru.fontawesomecomposelib.FaIcon
-import com.guru.fontawesomecomposelib.FaIconType
 import com.guru.fontawesomecomposelib.FaIcons
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 
 
 @Composable

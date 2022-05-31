@@ -181,7 +181,7 @@ fun BottomSheetResult(result: BarcodeResult?, scanViewModel: ScanViewModel = vie
 
                     val smsto = Regex("^([^:]*:[^:]*)").find(textWithoutChange!!)
 
-                    val smsbody = Regex("(?<=smsto:).*").find(textWithoutChange!!)?.groups?.first()?.value?.substringAfter(":")
+                    val smsbody = Regex("(?<=smsto:).*").find(textWithoutChange)?.groups?.first()?.value?.substringAfter(":")
 
 
                     

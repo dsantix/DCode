@@ -1,7 +1,6 @@
 package com.dsanti.dcode.ui.create
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -23,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -31,13 +29,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dsanti.dcode.R
-import com.dsanti.dcode.data.qrGenerator
 import com.dsanti.dcode.ui.*
 import com.dsanti.dcode.ui.theme.AppTypography
 import com.guru.fontawesomecomposelib.FaIcon
 import com.guru.fontawesomecomposelib.FaIcons
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)

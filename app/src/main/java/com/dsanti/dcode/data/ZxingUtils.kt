@@ -1,18 +1,10 @@
 package com.dsanti.dcode.data
 
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.ImageFormat
-import android.os.Build
-import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
-import com.google.zxing.qrcode.QRCodeWriter
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
 @androidx.camera.core.ExperimentalGetImage
@@ -104,34 +96,4 @@ private data class RotatedImage(var byteArray: ByteArray, var width: Int, var he
         result = 31 * result + height
         return result
     }
-}
-
-
-
-fun qrGenerator(data:String, width: Int, height: Int, @ColorInt color: Int = Color.WHITE, @ColorInt backgroundColor : Int = Color.BLACK) : Bitmap {
-    val hints = hashMapOf<EncodeHintType, Any>().also {
-        it[EncodeHintType.CHARACTER_SET] = "utf-8"
-        it[EncodeHintType.MARGIN] = 1
-        it[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.L
-    }
-
-
-    val code = QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, width, height, hints)
-
-
-
-    val width: Int = code.width
-    val height: Int = code.height
-    val pixels = IntArray(width * height)
-    for (y in 0 until height) {
-        val offset = y * width
-        for (x in 0 until width) {
-            pixels[offset + x] = if (code.get(x, y)) color else backgroundColor
-        }
-    }
-
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
-
-    return bitmap
 }

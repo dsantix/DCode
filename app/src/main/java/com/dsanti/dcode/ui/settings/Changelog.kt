@@ -17,7 +17,7 @@ import com.dsanti.dcode.ui.theme.AppTypography
 import com.dsanti.dcode.ui.theme.DCodeTheme
 import kotlinx.coroutines.launch
 
-val updates = listOf<Update>()
+val updates = listOf(Update(version = "v0.15", "May, 31 2022", whatsNew = listOf("Languages: Chinese and Spanish"), listOf("Minor bugs fixes","Home scrolling", "Remove unnecessary items"), improved = listOf("Live preview"), version_label = "Beta - hotfix"))
 
 @Composable
 fun Changelog(modifier: Modifier) {

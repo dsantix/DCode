@@ -19,8 +19,8 @@ android {
         applicationId "com.dsanti.dcode"
         minSdk 24
         targetSdk 32
-        versionCode 1
-        versionName "0.10"
+        versionCode 2
+        versionName "0.15"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

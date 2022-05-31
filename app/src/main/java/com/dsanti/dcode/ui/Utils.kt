@@ -12,6 +12,7 @@ import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.MediaColumns.IS_PENDING
+import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,10 +29,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.*
 import androidx.core.content.FileProvider
@@ -41,6 +39,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.qrcode.QRCodeWriter
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -191,5 +193,29 @@ fun legacySave(bitmap: Bitmap, context: Context): Uri {
         null, null)
     return FileProvider.getUriForFile(appContext, "${appContext.packageName}.provider",
         file)
+}
+
+
+fun ImageBitmap.Companion.generateQRCode(data:String, @ColorInt color: Int = Color.White.toArgb(), @ColorInt backgroundColor : Int = Color.Black.toArgb()) : ImageBitmap{
+    val hints = hashMapOf<EncodeHintType, Any>().also {
+        it[EncodeHintType.CHARACTER_SET] = "utf-8"
+        it[EncodeHintType.MARGIN] = 1
+        it[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.L
+    }
+
+    val size = 512
+
+    val code = QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, size, size, hints)
+
+    return Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565).also {
+        for (x in 0 until size) {
+            for (y in 0 until size) {
+                it.setPixel(
+                    x, y,
+                    if (code[x,y]) color else backgroundColor
+                )
+            }
+        }
+    }.asImageBitmap()
 }
 

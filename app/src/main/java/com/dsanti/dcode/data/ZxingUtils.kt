@@ -108,7 +108,7 @@ private data class RotatedImage(var byteArray: ByteArray, var width: Int, var he
 
 
 
-fun qrGenerator(data:String, width: Int, height: Int, @ColorInt color: Int, @ColorInt backgroundColor : Int) : Bitmap {
+fun qrGenerator(data:String, width: Int, height: Int, @ColorInt color: Int = Color.WHITE, @ColorInt backgroundColor : Int = Color.BLACK) : Bitmap {
     val hints = hashMapOf<EncodeHintType, Any>().also {
         it[EncodeHintType.CHARACTER_SET] = "utf-8"
         it[EncodeHintType.MARGIN] = 1

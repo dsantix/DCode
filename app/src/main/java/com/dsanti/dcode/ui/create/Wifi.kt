@@ -75,10 +75,6 @@ fun CreateWifi(modifier: PaddingValues) {
         mutableStateOf("")
     }
 
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-
     val capturableBitmap = remember {
         mutableStateOf<ImageBitmap?>(null)
     }
@@ -247,17 +243,11 @@ fun CreateWifi(modifier: PaddingValues) {
 
             Switch(checked = checked, onCheckedChange = { checked = it }, thumbContent = icon, modifier = Modifier.padding(horizontal = 8.dp))
 
-
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
-
-
-
             when {
                 textPassword.isEmpty() && checked -> data = "WIFI:S:$textSSID;T:$textEncryption;H:$checked;;"
                 textEncryption.isEmpty() -> data = "WIFI:S:$textSSID;T:$textEncryption;P:$textPassword;H:$checked;;"
 
             }
-
 
             data = buildString {
                 append("WIFI:S:$textSSID;")
@@ -267,14 +257,13 @@ fun CreateWifi(modifier: PaddingValues) {
                 append(";")
             }
 
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
+
 
             Button(onClick = {
                 println(data)
                 if (textSSID.isNotEmpty()){
-                    qrCodeBitmap = qrGenerator(data, 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                     scope.launch {
-                        delay(300)
 
                         captureController.capture()
                         bottomSheetState.show()

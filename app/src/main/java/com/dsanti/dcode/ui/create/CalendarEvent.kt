@@ -108,11 +108,6 @@ fun CreateCalendarEvent(modifier: PaddingValues) {
         mutableStateOf("${Calendar.getInstance().get(Calendar.HOUR_OF_DAY)}:${Calendar.getInstance().get(Calendar.MINUTE)}")
     }
 
-
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-
     val capturableBitmap = remember {
         mutableStateOf<ImageBitmap?>(null)
     }
@@ -394,26 +389,25 @@ fun CreateCalendarEvent(modifier: PaddingValues) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
-
             data = buildString {
                 append("BEGIN:VEVENT\n")
                 append("SUMMARY:$title\n")
                 if (checked) append("DTSTART;VALUE=DATE:${SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(startCalendar)}")
-                    else append("DTSTART:${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(startCalendar)}")
+                else append("DTSTART:${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(startCalendar)}")
                 if (checked) append("DTEND;VALUE=DATE:${SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(endCalendar)}")
-                    else append("DTEND:${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(endCalendar)}")
+                else append("DTEND:${SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(endCalendar)}")
                 if (location.isNotEmpty()) append("LOCATION:$location")
                 if (description.isNotEmpty()) append("DESCRIPTION:$description")
                 append("END:VEVENT")
             }
 
+
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
+
+
             Button(onClick = {
                 if (title.isNotEmpty() && data.isNotEmpty()){
-                    qrCodeBitmap = qrGenerator(data, 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                     scope.launch {
-                        delay(300)
 
                         captureController.capture()
                         bottomSheetState.show()

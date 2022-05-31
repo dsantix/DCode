@@ -98,11 +98,6 @@ fun CreateVCard(modifier: PaddingValues) {
         mutableStateOf(phoneNumber.isValidUrl())
     }
 
-
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-
     val capturableBitmap = remember {
         mutableStateOf<ImageBitmap?>(null)
     }
@@ -340,8 +335,6 @@ fun CreateVCard(modifier: PaddingValues) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
-
             data = buildString {
                 append("BEGIN:VCARD\n")
                 append("VERSION:3.0\n")
@@ -356,12 +349,10 @@ fun CreateVCard(modifier: PaddingValues) {
                 append("END:VCARD\n")
             }
 
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
+
             Button(onClick = {
-                qrCodeBitmap = qrGenerator(data, 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                 scope.launch {
-                    delay(300)
-
                     captureController.capture()
                     bottomSheetState.show()
                 }

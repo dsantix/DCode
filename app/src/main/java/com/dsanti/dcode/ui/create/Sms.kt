@@ -69,9 +69,8 @@ fun CreateSMS(modifier: PaddingValues) {
         mutableStateOf("")
     }
 
-
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
+    var data by remember {
+        mutableStateOf("")
     }
 
     val capturableBitmap = remember {
@@ -178,15 +177,16 @@ fun CreateSMS(modifier: PaddingValues) {
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
 
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
+            data = buildString {
+                append("smsto:$textPhone")
+                if (textMessage.isNotEmpty()) append(":$textMessage")
+            }
+
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
 
             Button(onClick = {
-                if (textPhone.isNotEmpty() && textMessage.isNotEmpty() && textPhone.isValidPhone()){
-                    qrCodeBitmap = qrGenerator("smsto:$textPhone:$textMessage", 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
+                if (textPhone.isNotEmpty() && textPhone.isValidPhone()){
                     scope.launch {
-                        delay(300)
-
                         captureController.capture()
                         bottomSheetState.show()
                     }

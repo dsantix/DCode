@@ -1,12 +1,13 @@
 package com.dsanti.dcode.ui.home
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
@@ -16,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -49,9 +52,65 @@ fun GridListContentScrolling(navController: NavController) {
 
     val state = rememberLazyGridState()
 
+    val shapeColor = MaterialTheme.colorScheme.primary
 
-    LazyVerticalGrid(columns = GridCells.Fixed(2), state = state,horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp),content = {
-        
+
+    LazyVerticalGrid(columns = GridCells.Fixed(2), state = state,horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize(),content = {
+
+        item(span = {
+            GridItemSpan(this.maxLineSpan)
+        }) {
+            Box {
+
+                Column(Modifier.align(Alignment.TopCenter)) {
+                    Icon(painter = painterResource(id = R.drawable.ic_qr_create_icon), contentDescription = stringResource(
+                        id = R.string.contentd_dcode_icon
+                    ), tint = shapeColor, modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Text(text = stringResource(id = R.string.app_name), modifier = Modifier
+                        .padding(top = 1.dp)
+                        .align(Alignment.CenterHorizontally))
+                }
+
+
+                Column {
+
+                    Box(modifier = Modifier
+                        .size(42.dp)
+                        .rotate(45F)
+                        .border(BorderStroke(2.dp, shapeColor))
+                        .align(Alignment.End)
+                    )
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.TopStart)) {
+
+
+                        Box(modifier = Modifier
+                            .size(54.dp)
+                            .rotate(45F)
+                            .border(BorderStroke(2.dp, shapeColor))
+                        )
+
+                        Spacer(modifier = Modifier.width(40.dp))
+
+                        Box(modifier = Modifier
+                            .size(26.dp)
+                            .rotate(45F)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(shapeColor))
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    Text(text = stringResource(id = R.string.home_create),
+                        style = AppTypography.displaySmall
+                    )
+                }
+            }
+        }
+
+
         items(listItems.size) { index ->
             Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant,elevation = 4.dp,
                 modifier = Modifier
@@ -64,10 +123,12 @@ fun GridListContentScrolling(navController: NavController) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(8.dp)) {
                     Icon(imageVector = listItems[index].icon!!, contentDescription = "", tint = tint)
                     Spacer(modifier = Modifier.size(4.dp))
-                    Text(text = stringResource(id = listItems[index].title), color = tint)
+                    Text(text = stringResource(id = listItems[index].title), color = tint, textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             }
         }
+
+        /*
 
         header {
             Text(text = stringResource(id =  R.string.tab_social), style = AppTypography.displaySmall, modifier = Modifier.padding(start = 8.dp))
@@ -107,7 +168,7 @@ fun GridListContentScrolling(navController: NavController) {
                     }
                 }
             }
-        }
+        }*/
 
     })
 }

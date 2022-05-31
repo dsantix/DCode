@@ -40,92 +40,9 @@ fun Home(isUpdated:MutableState<Boolean>, navController: NavController){
 
     if (isUpdated.value) ChangelogDialog(openDialog = isUpdated)
 
-    Box {
-
-        Column {
-            Icon(painter = painterResource(id = R.drawable.ic_qr_create_icon), contentDescription = stringResource(
-                id = R.string.contentd_dcode_icon
-            ), tint = shapeColor, modifier = Modifier.align(Alignment.CenterHorizontally))
-            Text(text = stringResource(id = R.string.app_name), modifier = Modifier
-                .padding(top = 1.dp)
-                .align(Alignment.CenterHorizontally))
-            Content(navController)
-        }
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp)
-            .wrapContentSize(Alignment.TopStart)) {
-
-
-            Box(modifier = Modifier
-                .size(54.dp)
-                .rotate(45F)
-                .border(BorderStroke(2.dp, shapeColor))
-            )
-
-            Spacer(modifier = Modifier.width(40.dp))
-
-            Box(modifier = Modifier
-                .size(26.dp)
-                .rotate(45F)
-                .clip(RoundedCornerShape(2.dp))
-                .background(shapeColor))
-        }
-
-        Box(modifier = Modifier
-            .size(54.dp)
-            .rotate(45F)
-            .border(BorderStroke(2.dp, shapeColor))
-            .align(Alignment.TopEnd)
-        )
-    }
-
-}
-
-@Composable
-fun Content(navController: NavController) {
-    Spacer(modifier = Modifier.height(50.dp))
-    //SearchTextField()
-    Text(text = stringResource(id = R.string.home_create),
-        style = AppTypography.displaySmall
-    )
-    Spacer(modifier = Modifier.height(8.dp))
     GridListContentScrolling(navController)
-}
 
 
-@Composable
-fun SearchTextField() {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 8.dp, end = 8.dp)) {
-        Text(text = stringResource(id = R.string.home_create),
-            style = AppTypography.displaySmall, modifier = Modifier.padding(horizontal = 8.dp)
-        )
-
-        var text by remember { mutableStateOf("") }
-        val focusManager = LocalFocusManager.current
-        TextField(value = text, onValueChange = {text = it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            shape = RoundedCornerShape(8.dp),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Search,
-                    contentDescription = null
-                )
-            },
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
-        )
-    }
 }
 
 @Composable

@@ -59,6 +59,10 @@ fun CreateEmail(modifier: PaddingValues) {
         mutableStateOf("")
     }
 
+    var data by remember {
+        mutableStateOf("")
+    }
+
     val error by remember {
         mutableStateOf(text.isValidEmail())
     }
@@ -150,14 +154,13 @@ fun CreateEmail(modifier: PaddingValues) {
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
             if (text.isNotEmpty() && !text.isValidPhone()) Text(text = stringResource(id = R.string.enter_valid_email), modifier = Modifier.padding(horizontal = 8.dp), color = MaterialTheme.colorScheme.error)
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
+            data = "mailto:$text"
+
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
 
             Button(onClick = {
                 if (text.isNotEmpty() && text.isValidEmail()){
-                    qrCodeBitmap = qrGenerator("mailto:$text", 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                     scope.launch {
-                        delay(300)
 
                         captureController.capture()
                         bottomSheetState.show()

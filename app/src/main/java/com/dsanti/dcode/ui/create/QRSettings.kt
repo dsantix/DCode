@@ -58,6 +58,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.dsanti.dcode.R
 import com.dsanti.dcode.data.qrGenerator
+import com.dsanti.dcode.ui.generateQRCode
 import com.dsanti.dcode.ui.isValidUrl
 import com.dsanti.dcode.ui.legacySave
 import com.dsanti.dcode.ui.saveImageInQ
@@ -82,7 +83,7 @@ import java.util.*
 val colorsList = listOf(ColorsPick.Black, ColorsPick.White, ColorsPick.Red, ColorsPick.Green, ColorsPick.Blue, ColorsPick.Yellow)
 
 @Composable
-fun QRCodeSettings(qrCodeBackgroundColor: MutableState<Color>, qrCodeColor: MutableState<Color>, qrCode:Bitmap?, capturableController: CaptureController, capturableBitmap: MutableState<ImageBitmap?>) {
+fun QRCodeSettings(qrCodeBackgroundColor: MutableState<Color>, qrCodeColor: MutableState<Color>, qrCodeData:String, capturableController: CaptureController, capturableBitmap: MutableState<ImageBitmap?>) {
 
     val cardContentColor = remember {
         mutableStateOf(Color.Black)
@@ -160,7 +161,7 @@ fun QRCodeSettings(qrCodeBackgroundColor: MutableState<Color>, qrCodeColor: Muta
                 capturableBitmap.value = bitmap
             }
         }) {
-            LivePreviewCard(qrCode,previewWithCard, previewBottomTextWithCard, previewOnlyQRCode, bottomText, cardContentColor, textColor)
+            LivePreviewCard(qrCodeData,previewWithCard, previewBottomTextWithCard, previewOnlyQRCode, bottomText, cardContentColor, textColor, qrCodeColor, qrCodeBackgroundColor)
         }
 
 
@@ -415,7 +416,7 @@ fun ShapeAndColorCard(
                                     cardBackgroundChange.value = true
                                     textColorChange.value = false
                                     qrBackgroundColorChange.value = false
-                                    qrCodeColorChange.value = false             }, shape = RoundedCornerShape(100),modifier = Modifier.padding(horizontal = 8.dp)) {
+                                    qrCodeColorChange.value = false }, shape = RoundedCornerShape(100),modifier = Modifier.padding(horizontal = 8.dp)) {
                                     Icon(imageVector = Icons.Rounded.Edit, contentDescription = null)
                                 }
                             }
@@ -514,7 +515,7 @@ fun ShapeAndColorCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LivePreviewCard(qrCode:Bitmap?,previewWithCard:MutableState<Boolean>, previewBottomTextWithCard:MutableState<Boolean>, previewOnlyQRCode:MutableState<Boolean>, bottomText:String, cardContentColor:MutableState<Color>, textColor: MutableState<Color>) {
+fun LivePreviewCard(qrCodeData:String, previewWithCard:MutableState<Boolean>, previewBottomTextWithCard:MutableState<Boolean>, previewOnlyQRCode:MutableState<Boolean>, bottomText:String, cardContentColor:MutableState<Color>, textColor: MutableState<Color>, qrCodeColor: MutableState<Color>, qrCodeBackgroundColor: MutableState<Color>) {
 
     when {
         previewWithCard.value -> {
@@ -522,18 +523,18 @@ fun LivePreviewCard(qrCode:Bitmap?,previewWithCard:MutableState<Boolean>, previe
                 containerColor = cardContentColor.value
             )) {
                 Column {
-                    if (qrCode != null){
-                        Image(qrCode.asImageBitmap(), contentDescription = "Custom QR Code | Test",
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(24.dp))
+                    if (qrCodeData.isEmpty()){
+                        Box(modifier = Modifier
+                            .size(100.dp)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 1f)))
                     }else{
-                        Image(painter = painterResource(id = R.drawable.custom_qr_code), contentDescription = "Custom QR Code | Test",
+                        Image(bitmap = ImageBitmap.generateQRCode(qrCodeData, color = qrCodeColor.value.toArgb(), backgroundColor = qrCodeBackgroundColor.value.toArgb()),
+                            contentDescription = null,
                             modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(24.dp))
+                            .align(Alignment.CenterHorizontally)
+                            .padding(24.dp)
+                        )
                     }
-
 
                     Text(text = bottomText, color = textColor.value, modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -544,16 +545,17 @@ fun LivePreviewCard(qrCode:Bitmap?,previewWithCard:MutableState<Boolean>, previe
 
         previewBottomTextWithCard.value -> {
             Column {
-                if (qrCode != null){
-                    Image(qrCode.asImageBitmap(), contentDescription = "Custom QR Code | Test",
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(8.dp))
+                if (qrCodeData.isEmpty()){
+                    Box(modifier = Modifier
+                        .size(100.dp)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 1f)))
                 }else{
-                    Image(painter = painterResource(id = R.drawable.custom_qr_code), contentDescription = "Custom QR Code | Test",
+                    Image(bitmap = ImageBitmap.generateQRCode(qrCodeData, color = qrCodeColor.value.toArgb(), backgroundColor = qrCodeBackgroundColor.value.toArgb()),
+                        contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(8.dp))
+                            .padding(24.dp)
+                    )
                 }
 
                 Card(Modifier.align(Alignment.CenterHorizontally), colors = CardDefaults.cardColors(containerColor = cardContentColor.value)) {
@@ -565,10 +567,16 @@ fun LivePreviewCard(qrCode:Bitmap?,previewWithCard:MutableState<Boolean>, previe
         }
 
         previewOnlyQRCode.value -> {
-            if (qrCode != null){
-                Image(qrCode.asImageBitmap(), contentDescription = "Custom QR Code | Test")
+            if (qrCodeData.isEmpty()){
+                Box(modifier = Modifier
+                    .size(100.dp)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 1f)))
             }else{
-                Image(painter = painterResource(id = R.drawable.custom_qr_code), contentDescription = "Custom QR Code | Test")
+                Image(bitmap = ImageBitmap.generateQRCode(qrCodeData, color = qrCodeColor.value.toArgb(), backgroundColor = qrCodeBackgroundColor.value.toArgb()),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
             }
 
         }

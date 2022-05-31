@@ -61,13 +61,12 @@ fun CreateTelephoneNumber(modifier: PaddingValues) {
         mutableStateOf("")
     }
 
-    val error by remember {
-        mutableStateOf(text.isValidPhone())
+    var data by remember {
+        mutableStateOf("")
     }
 
-
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
+    val error by remember {
+        mutableStateOf(text.isValidPhone())
     }
 
     val capturableBitmap = remember {
@@ -153,15 +152,14 @@ fun CreateTelephoneNumber(modifier: PaddingValues) {
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
             if (text.isNotEmpty() && !text.isValidPhone()) Text(text = stringResource(id = R.string.invalid_url), modifier = Modifier.padding(horizontal = 8.dp), color = MaterialTheme.colorScheme.error)
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
+            data = "tel:$text"
+
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
 
             Button(onClick = {
                 if (text.isNotEmpty() && text.isValidPhone()){
-                    qrCodeBitmap = qrGenerator("tel:$text", 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
 
                     scope.launch {
-                        delay(300)
-
                         captureController.capture()
                         bottomSheetState.show()
                     }

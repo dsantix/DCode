@@ -64,11 +64,6 @@ fun CreateWebsiteUrl(modifier: PaddingValues) {
         mutableStateOf(text.isValidUrl())
     }
 
-
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-
     val capturableBitmap = remember {
         mutableStateOf<ImageBitmap?>(null)
     }
@@ -152,15 +147,11 @@ fun CreateWebsiteUrl(modifier: PaddingValues) {
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()} ))
             if (text.isNotEmpty() && !text.isValidUrl()) Text(text = stringResource(id = R.string.invalid_url), modifier = Modifier.padding(horizontal = 8.dp), color = MaterialTheme.colorScheme.error)
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, text, captureController, capturableBitmap)
 
             Button(onClick = {
                 if (text.isNotEmpty() && text.isValidUrl()){
-                    qrCodeBitmap = qrGenerator(text, 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                     scope.launch {
-                        delay(300)
-
                         captureController.capture()
                         bottomSheetState.show()
                     }

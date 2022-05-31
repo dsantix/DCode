@@ -64,10 +64,6 @@ fun CreateAppStore(modifier: PaddingValues) {
         mutableStateOf("")
     }
 
-    var qrCodeBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-
     val capturableBitmap = remember {
         mutableStateOf<ImageBitmap?>(null)
     }
@@ -198,17 +194,13 @@ fun CreateAppStore(modifier: PaddingValues) {
                 }
             }
 
-            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, qrCodeBitmap, captureController, capturableBitmap)
-
-
             data = if (selectedOptionText == R.string.play_store) "https://play.google.com/store/apps/details?id=$text" else "https://itunes.apple.com/us/app/$text"
+
+            QRCodeSettings(qrCodeBackgroundColor, qrCodeColor, data, captureController, capturableBitmap)
 
             Button(onClick = {
                 if (text.isNotEmpty() && data.isNotEmpty()){
-                    qrCodeBitmap = qrGenerator(data, 512, 512, qrCodeColor.value.toArgb(), qrCodeBackgroundColor.value.toArgb())
-
                     scope.launch {
-                        delay(300)
 
                         captureController.capture()
                         bottomSheetState.show()

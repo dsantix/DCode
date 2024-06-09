@@ -109,6 +109,8 @@ object Dependencies {
     const val zxingCore = "com.google.zxing:core:${Versions.zxingGoogle}"
 
 
+    const val blablacar = "com.google.firebase:firebase-appdistribution-api:16.0.0-beta13"
+
 
 }
 
@@ -228,8 +230,7 @@ internal val accompanistDependencies = listOf(
     Dependencies.accompanistUiController,
     Dependencies.accompanistPager,
     Dependencies.accompanistPermissions,
-    Dependencies.accompanistNavigationAnimation,
-    Dependencies.accompanistWebView
+    Dependencies.accompanistNavigationAnimation
 )
 
 internal val cameraXDependencies = listOf(

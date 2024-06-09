@@ -93,15 +93,4 @@ fun DCodeTheme(
         isDarkTheme -> DarkColors
         else -> LightColors
     }
-
-    MaterialTheme(
-        colorScheme = myColorScheme
-    ) {
-        // TODO (M3): MaterialTheme doesn't provide LocalIndication, remove when it does
-        val rippleIndication = rememberRipple()
-        CompositionLocalProvider(
-            LocalIndication provides rippleIndication,
-            content = content
-        )
-    }
 }

@@ -9,6 +9,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.firebase-perf")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -45,6 +46,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
@@ -57,7 +59,6 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true
 
         // Disable unused AGP features
         aidl = false
@@ -66,18 +67,17 @@ android {
         shaders = false
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = Configs.kotlinCompilerExtensionVersion
-    }
     lint {
         abortOnError = false
     }
-    packagingOptions {
+
+    packaging {
         resources.excludes.apply {
             add("META-INF/AL2.0")
             add("META-INF/LGPL2.1")
         }
     }
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -90,8 +90,6 @@ dependencies {
     addKotlinDependencies()
 
     addDataDependencies()
-
-    //addDiDependencies()
 
     addComposeOfficialDependencies()
     addComposeDebugDependencies()

@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.dsanti.dcode.R
-import com.dsanti.dcode.utils.SystemBarTransparent
 import com.dsanti.dcode.ui.theme.DCodeTheme
 
 class ScanActivity : ComponentActivity() {
@@ -32,7 +31,6 @@ class ScanActivity : ComponentActivity() {
         setContent { 
             DCodeTheme {
                 val context = LocalContext.current
-                SystemBarTransparent()
                 Box(modifier = Modifier.fillMaxSize()){
                     ScanCameraWithPermissions(context = context)
                     IconButton(onClick = {

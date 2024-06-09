@@ -1,6 +1,6 @@
 package com.dsanti.dcode
 
-import android.content.Context
+import      android.content.Context
 import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardBackspace
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -22,13 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.dsanti.dcode.ui.create.*
 import com.dsanti.dcode.ui.home.Home
 import com.dsanti.dcode.ui.scan.ScanActivity
 import com.dsanti.dcode.ui.settings.*
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.compose.composable
 
 val settingsItemList = listOf(SettingsItem(Icons.Rounded.History, R.string.settings_history, Screen.History),
     SettingsItem(Icons.Rounded.LocalPolice, R.string.privacy_policy, Screen.PrivacyPolicy), SettingsItem(Icons.Rounded.Info, R.string.settings_about, Screen.About)
@@ -106,7 +107,7 @@ fun TopAppBar(navController: NavHostController, topBarState: MutableState<Boolea
     exit = slideOutHorizontally(targetOffsetX = {it})) {
         MediumTopAppBar(title = { Text(text = stringResource(id = title))}
         ,navigationIcon = { IconButton(onClick = { navController.popBackStack()}) {
-                Icon(imageVector = Icons.Rounded.KeyboardBackspace, contentDescription = null)
+                Icon(imageVector = Icons.AutoMirrored.Rounded.KeyboardBackspace, contentDescription = null)
             }}, scrollBehavior = scrollBehavior)
     }
 
@@ -137,19 +138,18 @@ fun DCodeAppNavigation(bottomBarState: MutableState<Boolean>, topBarState: Mutab
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableState<Boolean>, topBarState: MutableState<Boolean>, paddingValues: PaddingValues, isAppUpdated:MutableState<Boolean>) {
 
-    AnimatedNavHost(navController = navController, startDestination = Screen.Home.route){
+    NavHost(navController = navController, startDestination = Screen.Home.route){
         composable(Screen.Home.route, enterTransition = {
             when(initialState.destination.route){
-                Screen.Settings.route -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                Screen.Settings.route -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(700))
                 else -> null
             }
         }, exitTransition = {
             when(targetState.destination.route){
-                Screen.Home.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.Home.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -162,7 +162,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.Settings.route, enterTransition = {
             when(initialState.destination.route){
-                Screen.Home.route -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.Home.route -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -175,7 +175,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.About.route, exitTransition = {
             when(targetState.destination.route){
-                Screen.Settings.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.Settings.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -188,7 +188,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.PrivacyPolicy.route, exitTransition = {
             when(targetState.destination.route){
-                Screen.Settings.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.Settings.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -201,7 +201,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.History.route, exitTransition = {
             when(targetState.destination.route){
-                Screen.Settings.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.Settings.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -214,7 +214,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.Licenses.route, exitTransition = {
             when(targetState.destination.route){
-                Screen.About.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.About.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){
@@ -227,7 +227,7 @@ fun DCodeAppContent(navController: NavHostController, bottomBarState: MutableSta
 
         composable(Screen.Changelog.route, exitTransition = {
             when(targetState.destination.route){
-                Screen.About.route -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                Screen.About.route -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(700))
                 else -> null
             }
         }){

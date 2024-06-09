@@ -4,8 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -24,9 +23,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.dsanti.dcode.utils.SystemBarTransparent
+import androidx.navigation.compose.rememberNavController
 import com.dsanti.dcode.ui.theme.DCodeTheme
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -39,23 +37,20 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        enableEdgeToEdge()
 
         setContent {
             DCodeTheme {
-                SystemBarTransparent()
                 DCodeApp()
             }
         }
 
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun DCodeApp(){
-        val navController = rememberAnimatedNavController()
+        val navController = rememberNavController()
 
         val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
@@ -69,7 +64,7 @@ class MainActivity : ComponentActivity() {
 
         val versionApp = intPreferencesKey("version_app")
 
-        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(decayAnimationSpec = rememberSplineBasedDecay(), state = rememberTopAppBarState())
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState())
 
         LaunchedEffect(Unit){
             val versionAppFlow: Flow<Int> = context.applicationContext.dataStore.data
